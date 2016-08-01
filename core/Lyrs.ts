@@ -22,7 +22,7 @@ class Lyrs {
     public LOADING: egret.DisplayObjectContainer;
 
     public init(main: eui.UILayer) {
-
+        egret.log(main.width, main.height);
         this.W = main.width;
         this.H = main.height;
 

@@ -57,6 +57,8 @@ class FishScene extends eui.Component {
 		this.chooseChipView = new ChooseChipView();
 		this.chooseChipView.x = this.bottom_gr.x;this.chooseChipView.y = this.bottom_gr.y - 287;
 		this.chooseChipView.addEventListener(MyEvent.CHANGE_CHIP, this.onChangeChip, this);
+
+		this.bottom_gr.y = Lyrs.inst.H - this.bottom_gr.height;
 	}
 
 	//出竿

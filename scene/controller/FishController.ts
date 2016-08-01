@@ -16,28 +16,49 @@ class FishController extends egret.EventDispatcher {
 		var dir: number;
 		var strategy: ISwim;
 		var arr: any = [];
+		var fishNum;
+		for (var i = 0, len = FishConst.info.length; i < len; i++) {
+			fishNum = FishConst.info[i].num;
+			for (var j = 0; j < fishNum; j++) {
+				if (FishConst.YUN_SU == FishConst.info[i].swim) {
+					strategy = new YunsuSwim();
+				} else {
+					strategy = new BiansuSwim();
+				}
 
-		for (var i = 0; i < 12; i++) {
-			//4条小彩鱼
-			//3条小丑鱼
-			//2条蝴蝶鱼
-			//1条海南红鱼
-			//1条鮟鱇鱼
-			//1条大鲨鱼
-			strategy = new YunsuSwim();
-			fish = new Fish(strategy, 0);
-			dir = Rand.rand(0, 1);
-			fish.dir = dir;
-			if (GameConst.LEFT == dir) {
-				fish.x = Lyrs.inst.W + fish.anchorOffsetX;
-			} else {
-				fish.x = 0 - fish.anchorOffsetX;
+				fish = new Fish(strategy, i);
+				dir = Rand.rand(0, 1);
+				fish.dir = dir;
+				//鱼向右->鱼的位置在左边，反之亦然
+				fish.x = (GameConst.RIGHT == dir) ? 0 - fish.anchorOffsetX : Lyrs.inst.W + fish.anchorOffsetX;
+				fish.y = Rand.rand(480, Lyrs.inst.H - 172);//fish.y = Rand.rand(380, 964);			
+				fish.swim();
+				arr.push(fish);
+				this.s.addChild(fish);
 			}
-			fish.y = Rand.rand(480, 960);//fish.y = Rand.rand(380, 964);			
-			fish.swim();
-			arr.push(fish);
-			this.s.addChild(fish);
 		}
+
+		// for (var i = 0; i < 12; i++) {
+		// 	//4条小彩鱼
+		// 	//3条小丑鱼
+		// 	//2条蝴蝶鱼
+		// 	//1条海南红鱼
+		// 	//1条鮟鱇鱼
+		// 	//1条大鲨鱼
+		// 	strategy = new YunsuSwim();
+		// 	fish = new Fish(strategy, 0);
+		// 	dir = Rand.rand(0, 1);
+		// 	fish.dir = dir;
+		// 	if (GameConst.LEFT == dir) {
+		// 		fish.x = Lyrs.inst.W + fish.anchorOffsetX;
+		// 	} else {
+		// 		fish.x = 0 - fish.anchorOffsetX;
+		// 	}
+		// 	fish.y = Rand.rand(480, 960);//fish.y = Rand.rand(380, 964);			
+		// 	fish.swim();
+		// 	arr.push(fish);
+		// 	this.s.addChild(fish);
+		// }
 		this.fishArr.push(arr);
 	}
 
@@ -61,12 +82,12 @@ class FishController extends egret.EventDispatcher {
 		var self = this;
 		var arr: Fish[] = Copy.copy(this.shanggouFishArr);
 
-		nextFish(yuer.x + Math.round(yuer.width * .5), yuer.y + yuer.height - 30);
-		
+		nextFish(yuer.x + Math.round(yuer.width * .5), yuer.y + yuer.height - 20);
+
 		function nextFish(posX, posY) {
-			fish = self.shanggouFishArr.shift();			
+			fish = self.shanggouFishArr.shift();
 			if (fish) {
-				fish.shanggou(posX, posY + fish.anchorOffsetX, nextFish);
+				fish.shanggou(posX, posY + fish.anchorOffsetX * fish.scale, nextFish);
 			} else {
 				self.freeFish(arr);
 				self.dispatchEventWith(MyEvent.ALL_FISH_SHANG_GOU);
@@ -78,13 +99,13 @@ class FishController extends egret.EventDispatcher {
 		var fish: Fish;
 		for (var i = 0, len = arr.length; i < len; i++) {
 			fish = arr[i];
-			fish.rotation = 0;			
+			fish.rotation = 0;
 			if (GameConst.LEFT == fish.dir) {
 				fish.x = Lyrs.inst.W + fish.anchorOffsetX;
 			} else {
 				fish.x = 0 - fish.anchorOffsetX;
 			}
-			fish.y = Rand.rand(480, 960);//fish.y = Rand.rand(380, 964);			
+			fish.y = Rand.rand(480, Lyrs.inst.H - 172);//fish.y = Rand.rand(380, 964);		
 			fish.swim();
 		}
 	}
